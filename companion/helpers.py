@@ -14,4 +14,5 @@ def filter_by_multiple_keys(keys, array):
 
 
 def choose(keys, array):
-	return list(map(lambda x: [x[key] for key in keys], array))
+	return [{key: entry[key] for key in keys} for entry in array]
+	# return list(map(lambda x: [x[key] for key in keys], array))

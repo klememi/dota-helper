@@ -1,7 +1,9 @@
 import click
 import requests
+import time
 from . import matches as m
 from . import players as p
+from . import errors as e
 from .helpers import *
 from tabulate import tabulate
 from time import strftime
@@ -17,30 +19,40 @@ def cli():
 
 
 @cli.command()
-@click.option('--pro/--public')
 @click.option('-t', '--team', type=str, multiple=True, callback=m.validate_teams)
 @click.option('-g', '--league', type=str)
 @click.option('-i', '--id', 'id_', type=str)
 @click.option('-l', '--live', is_flag=True)
-def matches(pro, team, league, id_, live):	
+def matches(team, league, id_, live):
+	try:
+		response = requests.get(url + m.endpoint(id_, live))
+		if response.status_code != 200:
+			raise e.BadRequestError()
+	except e.BadRequestError as err:
+		print('BadRequestError')
+		return
+	data = response.json()
 	if id_:
-		return exact_match(id_)
-	response = requests.get(url + m.endpoint(pro, live))
-	result = response.json()
+		return exact_match(data)
 	if team:
-		result = filter_substr(m.league_filter, team[0], result)
+		data = filter_substr(m.team_filter, team[0], data)
 		if len(team) == 2:
-			result = filter_substr(m.league_filter, team[1], result)
+			data = filter_substr(m.team_filter, team[1], data)
 	if league:
-		result = filter_substr(m.league_filter, league, result)
-	if id_:
-		result = filter_substr(m.id_filter, id_, result)
-	result = choose(m.chosen_cols, result)
-	print(tabulate(result, headers=m.table_headers))
+		data = filter_substr(m.league_filter, league, data)
+	print_matches(data)
 
 
-def exact_match(id_):
+def print_matches(data):
+	for e in data:
+		print('-> {0}'.format(e['league_name']))
+		print('ID: {0}, duration: {1:02d}:{2:02d}'.format(e['match_id'], int(e['duration']/60), e['duration']%60))
+		print('{0:30} {1:3d}'.format(e['radiant_name'] or 'unknown', e['radiant_score']) + ('   WINNER' if e['radiant_win'] else ''))
+		print('{0:30} {1:3d}'.format(e['dire_name'] or 'unknown', e['dire_score']) + ('   WINNER' if not e['radiant_win'] else ''))
 
+
+def exact_match(data):
+	pass
 
 
 @cli.command()
