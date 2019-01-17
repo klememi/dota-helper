@@ -1,2 +1,0 @@
-class BadRequestError(Exception):
-	pass

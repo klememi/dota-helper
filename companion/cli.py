@@ -1,14 +1,8 @@
 import click
-import requests
-import time
 from . import matches as m
 from . import players as p
-from . import errors as e
+from . import mmr as r
 from .helpers import *
-from tabulate import tabulate
-
-
-url = 'https://api.opendota.com/api'
 
 
 @click.group('dotacli')
@@ -24,18 +18,13 @@ def cli():
 @click.option('-l', '--live', is_flag=True)
 def matches(team, league, id_, live):
 	try:
-		response = requests.get(url + m.endpoint(id_, live))
-		if response.status_code != 200:
-			raise e.BadRequestError()
-	except e.BadRequestError as err:
-		print('BadRequestError')
-		return
-	data = response.json()
-	if id_:
-		return m.process_matches(m.MatchType.EXACT, data)
-	if live:
-		return m.process_matches(m.MatchType.LIVE, data, team, league)
-	return m.process_matches(m.MatchType.RECENT, data, team, league)
+		data = get_response(m.endpoint(id_, live)).json()
+	except Exception as err:
+		return print(err)
+	if id_: type = m.MatchType.EXACT
+	elif live: type = m.MatchType.LIVE
+	else: type = m.MatchType.RECENT
+	return m.process_matches(type, data, team, league)
 
 
 @cli.command()
@@ -63,10 +52,14 @@ def heroes():
 
 
 @cli.command()
-@click.option('-r', '--rank')
-@click.option('-c', '--country')
-def mmr(rank, country):
-	pass
+@click.option('-r', '--ranks', is_flag=True)
+@click.option('-c', '--country', type=str)
+def mmr(ranks, country):
+	try:
+		data = get_response(r.endpoint).json()
+	except Exception as err:
+		return print(err)
+	r.process_mmr(data, ranks, country)
 
 
 @cli.command()

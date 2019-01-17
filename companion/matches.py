@@ -35,6 +35,8 @@ def print_matches(type, data):
 
 
 def print_matches_recent(data):
+	if not data:
+		return print('No data matching your criteria.')
 	data.sort(key=lambda a: a['start_time'])
 	for e in data[:20]:
 		print('-> {}'.format(e['league_name']))

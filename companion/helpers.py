@@ -1,4 +1,15 @@
+import requests
 from functools import reduce
+
+
+url = 'https://api.opendota.com/api'
+
+
+def get_response(endpoint):
+	response = requests.get(url + endpoint)
+	if response.status_code != requests.codes.ok:
+		response.raise_for_status()
+	return response
 
 
 def filter_eq(keys, value, array):
