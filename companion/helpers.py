@@ -11,8 +11,3 @@ def filter_substr(keys, value, array):
 
 def filter_by_multiple_keys(keys, array):
 	return list(filter(lambda a: reduce(lambda b, c: b or c, keys(a)), array))
-
-
-def choose(keys, array):
-	return [{key: entry[key] for key in keys} for entry in array]
-	# return list(map(lambda x: [x[key] for key in keys], array))

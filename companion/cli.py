@@ -6,7 +6,6 @@ from . import players as p
 from . import errors as e
 from .helpers import *
 from tabulate import tabulate
-from time import strftime
 
 
 url = 'https://api.opendota.com/api'
@@ -33,26 +32,10 @@ def matches(team, league, id_, live):
 		return
 	data = response.json()
 	if id_:
-		return exact_match(data)
-	if team:
-		data = filter_substr(m.team_filter, team[0], data)
-		if len(team) == 2:
-			data = filter_substr(m.team_filter, team[1], data)
-	if league:
-		data = filter_substr(m.league_filter, league, data)
-	print_matches(data)
-
-
-def print_matches(data):
-	for e in data:
-		print('-> {0}'.format(e['league_name']))
-		print('ID: {0}, duration: {1:02d}:{2:02d}'.format(e['match_id'], int(e['duration']/60), e['duration']%60))
-		print('{0:30} {1:3d}'.format(e['radiant_name'] or 'unknown', e['radiant_score']) + ('   WINNER' if e['radiant_win'] else ''))
-		print('{0:30} {1:3d}'.format(e['dire_name'] or 'unknown', e['dire_score']) + ('   WINNER' if not e['radiant_win'] else ''))
-
-
-def exact_match(data):
-	pass
+		return m.process_matches(m.MatchType.EXACT, data)
+	if live:
+		return m.process_matches(m.MatchType.LIVE, data, team, league)
+	return m.process_matches(m.MatchType.RECENT, data, team, league)
 
 
 @cli.command()
