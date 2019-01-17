@@ -63,7 +63,9 @@ def heroes():
 
 
 @cli.command()
-def mmr():
+@click.option('-r', '--rank')
+@click.option('-c', '--country')
+def mmr(rank, country):
 	pass
 
 
