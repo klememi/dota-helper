@@ -1,5 +1,5 @@
-from click import Option, UsageError
 import requests
+from click import Option, UsageError
 from functools import reduce
 
 

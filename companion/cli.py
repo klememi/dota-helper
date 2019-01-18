@@ -1,9 +1,9 @@
 from click import command, option, group, version_option
-from . import heroes as h
+from .helpers import *
+from . import heroes  as h
 from . import matches as m
 from . import players as p
-from . import mmr as r
-from .helpers import *
+from . import mmr     as r
 
 
 @group('dotacli')
@@ -66,10 +66,24 @@ def players(pro, country, team, name):
 
 
 @cli.command()
-@option('-n', '--name', type=str)
-@option('-b', '--best', is_flag=True)
-@option('-m', '--meta', is_flag=True)
-@option('-c', '--counter', is_flag=True)
+@option('-n', '--name', 
+		type=str,
+		help='',
+		required=True,
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['meta'])
+@option('-b', '--best', 
+		is_flag=True,
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['meta', 'counter'])
+@option('-m', '--meta', 
+		is_flag=True,
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['name', 'best', 'counter'])
+@option('-c', '--counter', 
+		is_flag=True,
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['best', 'meta'])
 def heroes(name, best, meta, counter):
 	try:
 		data = get_response(h.endpoint(name, best, meta, counter)).json()

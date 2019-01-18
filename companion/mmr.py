@@ -70,4 +70,6 @@ def print_mmr_country(data, country):
 	if not data:
 		return print('Country \'{}\' not found.'.format(country))
 	for c in data:
-		print('{} -> average MMR: {}, number of players: {}'.format(c['common'], c['avg'], c['count']))
+		print('{} -> average MMR: {}, number of players: {}'.format(c['common'], 
+																	c['avg'], 
+																	c['count']))
