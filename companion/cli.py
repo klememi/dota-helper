@@ -1,21 +1,40 @@
-import click
+from click import command, option, group, version_option
+from . import heroes as h
 from . import matches as m
 from . import players as p
 from . import mmr as r
 from .helpers import *
 
 
-@click.group('dotacli')
-@click.version_option(version=1.0, prog_name='Dota 2 Companion')
+@group('dotacli')
+@version_option(version=1.0, prog_name='Dota 2 Companion')
 def cli():
 	pass
 
 
 @cli.command()
-@click.option('-t', '--team', type=str, multiple=True, callback=m.validate_teams)
-@click.option('-g', '--league', type=str)
-@click.option('-i', '--id', 'id_', type=str)
-@click.option('-l', '--live', is_flag=True)
+@option('-t', '--team', 
+			  type=str,
+			  cls=MutuallyExclusiveOption,
+			  multiple=True,
+			  callback=m.validate_teams,
+			  help='Team filter',
+			  mutually_exclusive=['id_', 'live'])
+@option('-g', '--league', 
+			  type=str, 
+			  cls=MutuallyExclusiveOption,
+			  help='League filter',
+			  mutually_exclusive=['id_', 'live'])
+@option('-i', '--id', 'id_', 
+			  type=str, 
+			  cls=MutuallyExclusiveOption,
+			  help='match ID',
+			  mutually_exclusive=['team', 'league', 'live'])
+@option('-l', '--live', 
+			  is_flag=True, 
+			  cls=MutuallyExclusiveOption,
+			  help='Live filter',
+			  mutually_exclusive=['team', 'league', 'id_'])
 def matches(team, league, id_, live):
 	try:
 		data = get_response(m.endpoint(id_, live)).json()
@@ -28,10 +47,10 @@ def matches(team, league, id_, live):
 
 
 @cli.command()
-@click.option('-p', '--pro', is_flag=True)
-@click.option('-c', '--country', type=str)
-@click.option('-t', '--team', type=str)
-@click.option('-n', '--name', type=str)
+@option('-p', '--pro', is_flag=True)
+@option('-c', '--country', type=str)
+@option('-t', '--team', type=str)
+@option('-n', '--name', type=str)
 def players(pro, country, team, name):
 	endpoint = '/proPlayers' if pro else '/players'
 	r = requests.get(url + endpoint)
@@ -47,13 +66,29 @@ def players(pro, country, team, name):
 
 
 @cli.command()
-def heroes():
-	pass
+@option('-n', '--name', type=str)
+@option('-b', '--best', is_flag=True)
+@option('-m', '--meta', is_flag=True)
+@option('-c', '--counter', is_flag=True)
+def heroes(name, best, meta, counter):
+	try:
+		data = get_response(h.endpoint(name, best, meta, counter)).json()
+	except Exception as err:
+		return print(err)
+	h.process_heroes(data, name, best, meta, counter)
 
 
 @cli.command()
-@click.option('-r', '--ranks', is_flag=True)
-@click.option('-c', '--country', type=str)
+@option('-r', '--ranks', 
+		is_flag=True,
+		cls=MutuallyExclusiveOption,
+	    help='Ranks',
+	    mutually_exclusive=['country'])
+@option('-c', '--country',
+		type=str,
+		cls=MutuallyExclusiveOption,
+	    help='Country',
+	    mutually_exclusive=['ranks'])
 def mmr(ranks, country):
 	try:
 		data = get_response(r.endpoint).json()

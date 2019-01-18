@@ -4,9 +4,9 @@ from .helpers import *
 from . import heroes as h
 
 
-live = '/live'
-pro_matches = '/proMatches'
-matches = '/matches'
+live_endpoint = '/live'
+pro_matches_endpoint = '/proMatches'
+matches_endpoint = '/matches'
 team_filter = ['radiant_name', 'dire_name']
 league_filter = ['league_name']
 
@@ -109,6 +109,6 @@ def validate_teams(ctx, param, value):
 
 def endpoint(id_, live):
 	if live:
-		return live
+		return live_endpoint
 	else:
-		return matches + '/' + id_ if id_ else pro_matches
+		return matches_endpoint + '/' + id_ if id_ else pro_matches_endpoint

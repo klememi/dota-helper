@@ -117,3 +117,15 @@ heroes = {
 	120: 'Pangolier',
 	121: 'Grimstroke'
 }
+
+
+def endpoint(name, best, meta, counter):
+	hero_id = list(heroes.keys())[list(heroes.values()).index(name)]
+	if best: return '/rankings?hero_id={}'.format(hero_id)
+	if meta: return '/heroStats'
+	if counter: return '/heroes/{}/matchups'.format(hero_id)
+	return '/heroes'
+
+
+def process_heroes(data, name, best, meta, counter):
+	pass
