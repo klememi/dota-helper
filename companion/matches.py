@@ -29,14 +29,13 @@ def process_matches(type, data, team=None, league=None):
 
 
 def print_matches(type, data):
-	if type == MatchType.RECENT: print_matches_recent(data)
-	if type == MatchType.LIVE: print_matches_live(data)
-	if type == MatchType.EXACT: print_matches_id(data)
+	if not data: return print('Data matching your criteria not found.')
+	if type == MatchType.RECENT: return print_matches_recent(data)
+	if type == MatchType.LIVE: return print_matches_live(data)
+	if type == MatchType.EXACT: return print_matches_id(data)
 
 
 def print_matches_recent(data):
-	if not data:
-		return print('No data matching your criteria.')
 	data.sort(key=lambda a: a['start_time'])
 	for e in data[:20]:
 		print('-> {}'.format(e['league_name']))
