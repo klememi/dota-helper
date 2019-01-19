@@ -6,11 +6,11 @@ from functools import reduce
 url = 'https://api.opendota.com/api'
 
 
-def get_response(endpoint):
+def get_response_json(endpoint):
 	response = requests.get(url + endpoint)
 	if response.status_code != requests.codes.ok:
 		response.raise_for_status()
-	return response
+	return response.json()
 
 
 def filter_eq(keys, value, array):

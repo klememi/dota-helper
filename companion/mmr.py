@@ -3,7 +3,7 @@ from . import helpers as h
 
 
 endpoint = '/distributions'
-ranks = {
+ranks    = {
 	11: 'Herald I',
 	12: 'Herald II',
 	13: 'Herald III',

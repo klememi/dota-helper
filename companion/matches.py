@@ -4,17 +4,17 @@ from .helpers import *
 from . import heroes as h
 
 
-live_endpoint = '/live'
+live_endpoint        = '/live'
 pro_matches_endpoint = '/proMatches'
-matches_endpoint = '/matches'
-team_filter = ['radiant_name', 'dire_name']
-league_filter = ['league_name']
+matches_endpoint     = '/matches'
+team_filter          = ['radiant_name', 'dire_name']
+league_filter        = ['league_name']
 
 
 class MatchType(Enum):
 	RECENT = 1
-	LIVE = 2
-	EXACT = 3
+	LIVE   = 2
+	EXACT  = 3
 
 
 def process_matches(type, data, team=None, league=None):

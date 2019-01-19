@@ -37,7 +37,7 @@ def cli():
 			  mutually_exclusive=['team', 'league', 'id_'])
 def matches(team, league, id_, live):
 	try:
-		data = get_response(m.endpoint(id_, live)).json()
+		data = get_response_json(m.endpoint(id_, live))
 	except Exception as err:
 		return print(err)
 	if id_: type = m.MatchType.EXACT
@@ -47,46 +47,66 @@ def matches(team, league, id_, live):
 
 
 @cli.command()
-@option('-p', '--pro', is_flag=True)
-@option('-c', '--country', type=str)
-@option('-t', '--team', type=str)
-@option('-n', '--name', type=str)
-def players(pro, country, team, name):
-	endpoint = '/proPlayers' if pro else '/players'
-	r = requests.get(url + endpoint)
-	result = r.json()
-	if team:
-		result = filter_str(['team_name', 'team_tag'], team, result)
-	if country:
-		result = filter_str(['loccountrycode', 'country_code'], country, result)
-	if name:
-		result = filter_str(['personaname', 'name'], name, result)
-	result = list(map(lambda x: [x['name'], x['team_name']], result))
-	print(tabulate(result, headers=['name', 'team']))
+@option('-f', '--favourite', 
+		is_flag=True,
+		help='',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['country, team, name, id_'])
+@option('-c', '--country', 
+		type=str,
+		help='',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['favourite, id_'])
+@option('-t', '--team', 
+		type=str,
+		help='',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['favourite, id_'])
+@option('-n', '--name', 
+		type=str,
+		help='',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['favourite, id_'])
+@option('-i', '--id', 'id_',
+		type=str,
+		help='',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['favourite, country, team, name'])
+def players(favourite, country, team, name, id_):
+	if favourite: return p.players_favourite()
+	if id_:       return p.players_id(id_)
+	try:
+		data = get_response_json(p.pro_players_endpoint)
+	except Exception as err:
+		return print(err)
+	p.process_players(data, country, team, name)
 
 
 @cli.command()
 @option('-n', '--name', 
 		type=str,
-		help='',
 		required=True,
+		help='',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['meta'])
 @option('-b', '--best', 
 		is_flag=True,
+		help='',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['meta', 'counter'])
 @option('-m', '--meta', 
 		is_flag=True,
+		help='',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['name', 'best', 'counter'])
 @option('-c', '--counter', 
 		is_flag=True,
+		help='',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['best', 'meta'])
 def heroes(name, best, meta, counter):
 	try:
-		data = get_response(h.endpoint(name, best, meta, counter)).json()
+		data = get_response_json(h.endpoint(name, best, meta, counter))
 	except Exception as err:
 		return print(err)
 	h.process_heroes(data, name, best, meta, counter)
@@ -95,25 +115,20 @@ def heroes(name, best, meta, counter):
 @cli.command()
 @option('-r', '--ranks', 
 		is_flag=True,
-		cls=MutuallyExclusiveOption,
 	    help='Ranks',
+	    cls=MutuallyExclusiveOption,
 	    mutually_exclusive=['country'])
 @option('-c', '--country',
 		type=str,
-		cls=MutuallyExclusiveOption,
 	    help='Country',
+	    cls=MutuallyExclusiveOption,
 	    mutually_exclusive=['ranks'])
 def mmr(ranks, country):
 	try:
-		data = get_response(r.endpoint).json()
+		data = get_response_json(r.endpoint)
 	except Exception as err:
 		return print(err)
 	r.process_mmr(data, ranks, country)
-
-
-@cli.command()
-def teams():
-	pass
 
 
 def main():
