@@ -43,7 +43,7 @@ class Match:
 
 
 	def __str__(self):
-		if not self.data: return k_NO_DATA
+		if not self.data: return kNO_DATA
 		if self.type == MatchType.RECENT: return self.matches_recent()
 		if self.type == MatchType.LIVE: return self.matches_live()
 		if self.type == MatchType.EXACT: return self.matches_id()
@@ -76,7 +76,7 @@ class Match:
 																							    d['dire_score']) +\
 				''.join(['\n    {}{} ({})'.format((p['team_tag'] + '.') if p['team_tag'] else '',
 				                                  p['name'],
-				                                  h.heroes[p['hero_id']]) for p in d['players'] if p.get('is_pro', False)])
+				                                  kHEROES[p['hero_id']]) for p in d['players'] if p.get('is_pro', False)])
 
 
 	def match_players_str(self, radiant):
@@ -89,7 +89,7 @@ class Match:
                    p['deaths'],
                    p['assists'],
                    p['total_gold'],
-		           h.heroes[p['hero_id']],
+		           kHEROES[p['hero_id']],
 			       p['level'],
 			       p['gold_per_min'],
 			       p['xp_per_min']) 

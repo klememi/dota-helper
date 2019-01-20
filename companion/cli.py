@@ -85,7 +85,6 @@ def players(favourite, country, team, name, id_):
 @cli.command(help='')
 @option('-n', '--name', 
 		type=str,
-		required=True,
 		help='',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['meta'])
@@ -105,6 +104,8 @@ def players(favourite, country, team, name, id_):
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['best', 'meta'])
 def heroes(name, best, meta, counter):
+	if (best or counter) and not name:
+		return print('Please specify hero.')
 	try:
 		data = get_response_json(h.endpoint(name, best, meta, counter))
 	except Exception as err:
