@@ -1,5 +1,6 @@
 from .helpers import *
 from .constants import *
+from .player import Player
 
 
 pro_players_endpoint    = '/proPlayers'

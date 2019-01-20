@@ -1,10 +1,11 @@
 from click import command, option, group, version_option
 from .helpers import *
 from .match import MatchType
-from . import heroes  as h
-from . import matches as m
-from . import players as p
-from . import mmr     as r
+from . import favourite as f
+from . import heroes    as h
+from . import matches   as m
+from . import players   as p
+from . import mmr       as r
 
 
 @group('dotacli')
@@ -131,6 +132,23 @@ def mmr(ranks, country):
 	except Exception as err:
 		return print(err)
 	r.process_mmr(data, ranks, country)
+
+
+@cli.command(help='Manage favourite players.')
+@option('-a', '--add',
+		type=str,
+		help='Add player to favourites.',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['remove'])
+@option('-r', '--remove',
+		type=str,
+		help='Remove player from favourites.',
+		cls=MutuallyExclusiveOption,
+		mutually_exclusive=['add'])
+def favourite(add, remove):
+	if add: return f.favourite_add(add)
+	if remove: return f.favourite_remove(remove)
+	return print('Please chose either of -a/-r options.')
 
 
 def main():

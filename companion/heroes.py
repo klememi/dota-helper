@@ -24,8 +24,7 @@ def print_heroes_best(data):
 		print('{:2d} {:30} ID: {:<10d} ({})'.format(x+1, 
 												    p['name'] or p['personaname'] or kUNKNOWN,
 												    p['account_id'],
-												    kRANKS[p['rank_tier']] if p['rank_tier'] else kUNKNOWN)
-		)
+												    kRANKS[p['rank_tier']] if p['rank_tier'] else kUNKNOWN))
 
 
 def print_heroes_meta(data):

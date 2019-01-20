@@ -117,8 +117,7 @@ kHEROES = {
 	114: 'Monkey King',
 	119: 'Dark Willow',
 	120: 'Pangolier',
-	121: 'Grimstroke'
-}
+	121: 'Grimstroke'}
 kRANKS = {
 	11: 'Herald I',
 	12: 'Herald II',
@@ -155,5 +154,30 @@ kRANKS = {
 	73: 'Divine III',
 	74: 'Divine IV',
 	75: 'Divine V',
-	80: 'Immortals'
-}
+	80: 'Immortals'}
+kMODES = {
+     0: "Unknown",
+     1: "All Pick",
+     2: "Captains Mode",
+     3: "Random Draft",
+     4: "Single Draft",
+     5: "All Random",
+     6: "Intro",
+     7: "Diretide",
+     8: "Reverse Captains Mode",
+     9: "Greeviling",
+    10: "Tutorial",
+    11: "Mid Only",
+    12: "Least Played",
+    13: "Limited Heroes",
+    14: "Compendium Matchmaking",
+    15: "Custom",
+    16: "Captains Draft",
+    17: "Balanced Draft",
+    18: "Ability Draft",
+    19: "Event",
+    20: "All Random Deathmatch",
+    21: "1v1 Mid",
+    22: "All Draft",
+    23: "Turbo",
+    24: "Mutation"}
