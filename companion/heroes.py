@@ -19,10 +19,10 @@ def process_heroes(data, name, best, meta, counter):
 
 
 def print_heroes_best(data):
-	if data['hero_id'] == 0: return print('Hero not found.')
+	if data['hero_id'] == 0: return print(kNO_DATA)
 	for x, p in enumerate(data['rankings'][:10]):
 		print('{:2d} {:30} ID: {:<10d} ({})'.format(x+1, 
-												    p['name'] or p['personaname'],
+												    p['name'] or p['personaname'] or kUNKNOWN,
 												    p['account_id'],
 												    kRANKS[p['rank_tier']] if p['rank_tier'] else kUNKNOWN)
 		)
@@ -38,7 +38,7 @@ def print_heroes_meta(data):
 
 
 def print_heroes_counter(data):
-	if not data: return print('Hero not found.')
+	if not data: return print(kNO_DATA)
 	data = list(filter(lambda a: a['games_played'] > 30, data))
 	data.sort(key=lambda a: a['wins'] / a['games_played'])
 	for h in data[:12]:

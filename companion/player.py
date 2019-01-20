@@ -1,7 +1,10 @@
+from .constants import *
+
+
 class Player:
 	def __init__(self, data_general, data_matches, data_heroes, data_totals, data_peers):
-		self.name = data_general['profile']['name'] or data_general['profile']['personaname'] or 'unknown'
-		self.country = data_general['profile']['loccountrycode'] or 'unknown'
+		self.name = data_general['profile']['name'] or data_general['profile']['personaname'] or kUNKNOWN
+		self.country = data_general['profile']['loccountrycode'] or kUNKNOWN
 		self.mmr = data_general['mmr_estimate']['estimate']
 		self.rank = data_general['rank_tier']
 		self.leaderboard_rank = data_general['leaderboard_rank']
@@ -28,4 +31,7 @@ class Player:
 
 
 	def __str__(self):
-		return '{} {}'.format(self.name, self.country)
+		return (''
+				''
+				''
+				'').format()

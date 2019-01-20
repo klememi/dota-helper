@@ -52,6 +52,6 @@ def print_players(data):
 	print(80 * '-')
 	for p in data:
 		print('{:30} {:7} {:30} {:<10}'.format(p['name'] or p['personaname'] or kUNKNOWN, 
-											   p['loccountrycode'] or p['country_code'].upper(), 
+											   p['loccountrycode'] or p['country_code'].upper() or kUNKNOWN, 
 											   p['team_name'] or kUNKNOWN,
-											   p['account_id']))
+											   p['account_id'] or kUNKNOWN))
