@@ -1,6 +1,7 @@
 import click
 from enum import Enum
 from .helpers import *
+from .constants import *
 from . import heroes as h
 
 
@@ -18,6 +19,8 @@ class MatchType(Enum):
 
 
 def process_matches(type, data, team=None, league=None):
+	if type == MatchType.EXACT:
+		return print(Match(data, type))
 	if type == MatchType.RECENT:
 		if team:
 			data = filter_substr(team_filter, team[0], data)
@@ -25,76 +28,86 @@ def process_matches(type, data, team=None, league=None):
 				data = filter_substr(team_filter, team[1], data)
 		if league:
 			data = filter_substr(league_filter, league, data)
-	print_matches(type, data)
+		data.sort(key=lambda a: a['start_time'], reverse=True)
+	if type == MatchType.LIVE:
+		data.sort(key=lambda a: a['sort_score'], reverse=True)
+	matches = [Match(d, type) for d in data[:10]]
+	for m in matches:
+		print(m)
 
 
-def print_matches(type, data):
-	if not data: return print('Data matching your criteria not found.')
-	if type == MatchType.RECENT: return print_matches_recent(data)
-	if type == MatchType.LIVE: return print_matches_live(data)
-	if type == MatchType.EXACT: return print_matches_id(data)
+class Match:
+	def __init__(self, data, type):
+		self.type = type
+		self.data = data
 
 
-def print_matches_recent(data):
-	data.sort(key=lambda a: a['start_time'])
-	for e in data[:20]:
-		print('-> {}'.format(e['league_name']))
-		print('ID: {}, duration: {:2d}:{:02d}'.format(e['match_id'], 
-													  int(e['duration']/60),
-													  e['duration']%60))
-		print('{:20} {:3d}{}'.format(e['radiant_name'] or 'unknown', e['radiant_score'],
-									 '  WON' if e['radiant_win'] else ''))
-		print('{:20} {:3d}{}'.format(e['dire_name'] or 'unknown', e['dire_score'],
-									 '  WON' if not e['radiant_win'] else ''))
+	def __str__(self):
+		if not self.data: return k_NO_DATA
+		if self.type == MatchType.RECENT: return self.matches_recent()
+		if self.type == MatchType.LIVE: return self.matches_live()
+		if self.type == MatchType.EXACT: return self.matches_id()
 
 
-def print_matches_live(data):
-	data.sort(key=lambda a: a['sort_score'])
-	for e in data[:20]:
-		print('-> {}, Game time: {:02d}:{:02d} (avg: {} MMR) Radiant {:2d} - {:2d} Dire'.format(e['match_id'], 
-																								int(e['game_time']/60), 
-																								e['game_time']%60, 
-																								e['average_mmr'], 
-																								e['radiant_score'], 
-																								e['dire_score']))
-		for p in e['players']:
-			if p.get('is_pro', False):
-				print('     {}{} ({})'.format((p['team_tag'] + '.') if p['team_tag'] else '', 
-											  p['name'], 
-											  h.heroes[p['hero_id']]))
+	def matches_recent(self):
+		d = self.data
+		return ('-> {}\n'
+				'ID: {}, duration: {:2d}:{:02d}\n'
+				'{:20} {:3d}{}\n'
+				'{:20} {:3d}{}\n').format(d['league_name'],
+								          d['match_id'],
+								          int(d['duration']/60),
+								          d['duration']%60,
+								          d['radiant_name'] or kUNKNOWN,
+								          d['radiant_score'],
+								          ' WON' if d['radiant_win'] else '',
+								          d['dire_name'] or kUNKNOWN,
+								          d['dire_score'],
+								          ' WON' if not d['radiant_win'] else '')
+   
+
+	def matches_live(self):
+		d = self.data
+		return  '-> {}, Time: {:02d}:{:02d} (avg: {:>4d} MMR) Radiant {:2d} - {:2d} Dire'.format(d['match_id'],
+																							    int(d['game_time']/60),
+																							    d['game_time']%60,
+																							    d['average_mmr'],
+																							    d['radiant_score'],
+																							    d['dire_score']) +\
+				''.join(['\n    {}{} ({})'.format((p['team_tag'] + '.') if p['team_tag'] else '',
+				                                  p['name'],
+				                                  h.heroes[p['hero_id']]) for p in d['players'] if p.get('is_pro', False)])
 
 
-def print_matches_id(data):
-	radiant_players = list(filter(lambda a: a['isRadiant'], data['players']))
-	dire_players = list(filter(lambda a: not a['isRadiant'], data['players']))
-	for p in radiant_players:
-		print('{:23}   {:>2d} / {:>2d} / {:>2d}  networth: {:>5d}'.format(p['name'] or p['personaname'], 
-										                                  p['kills'], 
-										                                  p['deaths'], 
-										                                  p['assists'], 
-										                                  p['total_gold']))
-		print('   {:20}   LVL {}   GPM {}   XPM {}'.format(h.heroes[p['hero_id']], 
-														   p['level'], 
-														   p['gold_per_min'], 
-														   p['xp_per_min']))
-	print('')
-	print('{:30}   {}{}'.format(data['radiant_team']['name'] or 'Radiant', 
-							    data['radiant_score'], 
-							    '   WON' if data['radiant_win'] else ''))
-	print('{:30}   {}{}'.format(data['dire_team']['name'] or 'Dire', 
-							    data['dire_score'], 
-							    '   WON' if not data['radiant_win'] else ''))
-	print('')
-	for p in dire_players:
-		print('{:23}   {:>2d} / {:>2d} / {:>2d}  networth: {:>5d}'.format(p['name'] or p['personaname'], 
-									                                      p['kills'], 
-									                                      p['deaths'], 
-									                                      p['assists'], 
-									                                      p['total_gold']))
-		print('   {:20}   LVL {}   GPM {}   XPM {}'.format(h.heroes[p['hero_id']], 
-														   p['level'], 
-														   p['gold_per_min'], 
-														   p['xp_per_min']))
+	def match_players_str(self, radiant):
+		d = self.data
+		if radiant: players = list(filter(lambda a: a['isRadiant'], d['players']))
+		else:       players = list(filter(lambda a: not a['isRadiant'], d['players']))
+		return '\n'.join(['{:23}   {:>2d} / {:>2d} / {:>2d}  networth: {:>5d}\n  {:20}   LVL {}   GPM {}   XPM {}'
+			.format(p['name'] or p['personaname'] or kUNKNOWN, 
+                   p['kills'],
+                   p['deaths'],
+                   p['assists'],
+                   p['total_gold'],
+		           h.heroes[p['hero_id']],
+			       p['level'],
+			       p['gold_per_min'],
+			       p['xp_per_min']) 
+			for p in players
+		])
+
+
+	def matches_id(self):
+		d = self.data
+		return '\n'.join([
+			self.match_players_str(radiant=True),
+			'\n{:30}   {}{}\n{:30}   {}{}\n'.format(d['radiant_team']['name'] or 'Radiant',
+												    d['radiant_score'],
+												    '   WON' if self.data['radiant_win'] else '',
+												    d['dire_team']['name'] or 'Dire',
+												    d['dire_score'],
+												    '   WON' if not self.data['radiant_win'] else ''),
+			self.match_players_str(radiant=False)])
 
 
 def validate_teams(ctx, param, value):

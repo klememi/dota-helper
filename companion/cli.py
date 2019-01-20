@@ -12,7 +12,7 @@ def cli():
 	pass
 
 
-@cli.command()
+@cli.command(help='')
 @option('-t', '--team', 
 			  type=str,
 			  cls=MutuallyExclusiveOption,
@@ -46,7 +46,7 @@ def matches(team, league, id_, live):
 	return m.process_matches(type, data, team, league)
 
 
-@cli.command()
+@cli.command(help='')
 @option('-f', '--favourite', 
 		is_flag=True,
 		help='',
@@ -82,7 +82,7 @@ def players(favourite, country, team, name, id_):
 	p.process_players(data, country, team, name)
 
 
-@cli.command()
+@cli.command(help='')
 @option('-n', '--name', 
 		type=str,
 		required=True,
@@ -112,7 +112,7 @@ def heroes(name, best, meta, counter):
 	h.process_heroes(data, name, best, meta, counter)
 
 
-@cli.command()
+@cli.command(help='')
 @option('-r', '--ranks', 
 		is_flag=True,
 	    help='Ranks',
