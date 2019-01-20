@@ -1,4 +1,5 @@
-from click import command, option, group, version_option
+from click import command, option, group, version_option, pass_context
+import configparser
 from .helpers import *
 from .match import MatchType
 from . import favourite as f
@@ -10,8 +11,37 @@ from . import mmr       as r
 
 @group('dotacli')
 @version_option(version=1.0, prog_name='Dota 2 Companion')
-def cli():
-	pass
+@option('-c', '--config', 
+		default='./dotacli.cfg',
+		help='Configuration file path.')
+@option('-i', '--id', 'id_',
+		default='',
+		type=str,
+	    help='Your account ID.')
+@pass_context
+def cli(ctx, config, id_):
+	cfg = configparser.ConfigParser()
+	cfg.optionxform = str
+	cfg.read(config)
+	if not 'favourite' in cfg:
+		cfg.add_section('favourite')
+		cfgfile = open(config, 'w')
+		cfg.write(cfgfile)
+		cfgfile.close()
+	if not 'private' in cfg:
+		cfg.add_section('private')
+		cfgfile = open(config, 'w')
+		cfg.write(cfgfile)
+		cfgfile.close()
+	if id_:
+		cfg.set('private', 'id', id_)
+		cfgfile = open(config, 'w')
+		cfg.write(cfgfile)
+		cfgfile.close()
+	ctx.obj['id'] = cfg.get('private', 'id', fallback=id_)
+	ctx.obj['favourite'] = cfg['favourite']
+	ctx.obj['cfg'] = cfg
+	ctx.obj['cfgfile'] = config
 
 
 @cli.command(help='Show matches info.')
@@ -53,29 +83,38 @@ def matches(team, league, id_, live):
 		is_flag=True,
 		help='Favourite players.',
 		cls=MutuallyExclusiveOption,
-		mutually_exclusive=['country, team, name, id_'])
+		mutually_exclusive=['country, team, name, id_, me'])
 @option('-c', '--country', 
 		type=str,
 		help='Filter players by country.',
 		cls=MutuallyExclusiveOption,
-		mutually_exclusive=['favourite, id_'])
+		mutually_exclusive=['favourite, id_, me'])
 @option('-t', '--team', 
 		type=str,
 		help='Filter players by team.',
 		cls=MutuallyExclusiveOption,
-		mutually_exclusive=['favourite, id_'])
+		mutually_exclusive=['favourite, id_, me'])
 @option('-n', '--name', 
 		type=str,
 		help='Filter players by name.',
 		cls=MutuallyExclusiveOption,
-		mutually_exclusive=['favourite, id_'])
+		mutually_exclusive=['favourite, id_, me'])
 @option('-i', '--id', 'id_',
 		type=str,
 		help='Player ID.',
 		cls=MutuallyExclusiveOption,
-		mutually_exclusive=['favourite, country, team, name'])
-def players(favourite, country, team, name, id_):
-	if favourite: return p.players_favourite()
+		mutually_exclusive=['favourite, country, team, name, me'])
+@option('-m', '--me',
+	    is_flag=True,
+	    help='Show your personal info.',
+	    cls=MutuallyExclusiveOption,
+	    mutually_exclusive=['favourite, country, team, name, id_'])
+@pass_context
+def players(ctx, favourite, country, team, name, id_, me):
+	if me:
+		if ctx.obj.get('id'): return p.players_id(ctx.obj.get('id'))
+		else: return print('You need to provide your account ID.')
+	if favourite: return p.players_favourite(ctx.obj['favourite'])
 	if id_:       return p.players_id(id_)
 	try:
 		data = get_response_json(p.pro_players_endpoint)
@@ -105,14 +144,17 @@ def players(favourite, country, team, name, id_):
 		help='Show hero\'s counters',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['best', 'meta'])
-def heroes(name, best, meta, counter):
+@pass_context
+def heroes(ctx, name, best, meta, counter):
+	if best and not name and ctx.obj.get('id'):
+		return p.best_heroes(ctx.obj.get('id'))
 	if (best or counter) and not name:
 		return print('Please specify hero.')
 	try:
 		data = get_response_json(h.endpoint(name, best, meta, counter))
 	except Exception as err:
 		return print(err)
-	h.process_heroes(data, name, best, meta, counter)
+	h.process_heroes(data, name, best, meta, counter, ctx.obj.get('id'))
 
 
 @cli.command(help='Show MMR info.')
@@ -145,11 +187,12 @@ def mmr(ranks, country):
 		help='Remove player from favourites.',
 		cls=MutuallyExclusiveOption,
 		mutually_exclusive=['add'])
-def favourite(add, remove):
-	if add: return f.favourite_add(add)
-	if remove: return f.favourite_remove(remove)
+@pass_context
+def favourite(ctx, add, remove):
+	if add: return f.favourite_add(add, ctx.obj.get('cfg'), ctx.obj.get('cfgfile'))
+	if remove: return f.favourite_remove(remove, ctx.obj.get('cfg'), ctx.obj.get('cfgfile'))
 	return print('Please chose either of -a/-r options.')
 
 
 def main():
-	cli()
+	cli(obj={})

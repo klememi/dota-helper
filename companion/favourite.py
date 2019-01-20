@@ -1,6 +1,27 @@
-def favourite_add(add):
-	pass
+import configparser
+from . import players as p
 
 
-def favourite_remove(remove):
-	pass
+def favourite_add(add, cfg, file):
+	if add in cfg['favourite'] and cfg['favourite'][add] == 'yes':
+		return print('This player is already in your favourites.')
+	else:
+		if p.player_id_is_ok(add):
+			cfg.set('favourite', add, 'yes')
+			cfgfile = open(file, 'w')
+			cfg.write(cfgfile)
+			cfgfile.close()
+			print('Player {} added to your favourites.'.format(add))
+		else:
+			print('This ID is not valid.')
+
+
+def favourite_remove(remove, cfg, file):
+	if remove not in cfg['favourite'] or cfg['favourite'][remove] == 'yes':
+		return print('This player is not in your favourites.')
+	else:
+		cfg.set('favourite', remove, 'no')
+		cfgfile = open(file, 'w')
+		cfg.write(cfgfile)
+		cfgfile.close()
+		print('Player {} removed from your favourites.'.format(remove))

@@ -16,24 +16,51 @@ country_filter          = ['loccountrycode', 'country_code']
 name_filter             = ['personaname', 'name']
 
 
-def players_favourite():
-	pass
+def player_id_is_ok(id_):
+	return 'profile' in get_response_json(player_endpoint.format(id_))
+
+
+def best_heroes(id_):
+	try:
+		player = load_player(id_)
+	except Exception as err:
+		return print(err)
+	print('\n'.join([h.__str__() for h in player.heroes_best]))
+
+
+def players_heroes(id_):
+	try:
+		return get_response_json(heroes_endpoint.format(id_))
+	except Exception as err:
+		print(err)
+
+
+def players_favourite(favourites):
+	for f in favourites:
+		if favourites[f] == 'yes':
+			players_id(f)
+			print(80 * '-')
 
 
 def players_id(id_):
 	try:
-		data_player = get_response_json(player_endpoint.format(id_))
-		data_wl = get_response_json(win_loss_endpoint.format(id_))
-		data_counts = get_response_json(counts_endpoint.format(id_))
-		data_general = {**data_player, **data_wl, **data_counts}
-		data_matches = get_response_json(recent_matches_endpoint.format(id_))
-		data_heroes = get_response_json(heroes_endpoint.format(id_))
-		data_totals = get_response_json(totals_endpoint.format(id_))
-		data_peers = get_response_json(peers_endpoint.format(id_))
-		player = Player(data_general, data_matches, data_heroes, data_totals, data_peers)
+		player = load_player(id_)
 	except Exception as err:
 		return print(err)
 	print(player)
+
+
+def load_player(id_):
+	data_player = get_response_json(player_endpoint.format(id_))
+	data_wl = get_response_json(win_loss_endpoint.format(id_))
+	data_counts = get_response_json(counts_endpoint.format(id_))
+	data_general = {**data_player, **data_wl, **data_counts}
+	data_matches = get_response_json(recent_matches_endpoint.format(id_))
+	data_heroes = get_response_json(heroes_endpoint.format(id_))
+	data_totals = get_response_json(totals_endpoint.format(id_))
+	data_peers = get_response_json(peers_endpoint.format(id_))
+	return Player(data_general, data_matches, data_heroes, data_totals, data_peers)
+
 
 
 def process_players(data, country, team, name):
