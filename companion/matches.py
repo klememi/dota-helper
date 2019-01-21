@@ -13,6 +13,14 @@ league_filter        = ['league_name']
 
 
 def process_matches(type, data, team=None, league=None):
+	'''
+	Processes matches data by given parameters and prints to stdout.
+
+	:param type: MatchType for the processing.
+	:param data: Data to be processed.
+	:param team: Teams to be used for filtering.
+	:param league: League to be used for filtering.
+	'''
 	if type == MatchType.EXACT:
 		return print(Match(data, type))
 	if type == MatchType.RECENT:
@@ -32,6 +40,11 @@ def process_matches(type, data, team=None, league=None):
 
 
 def validate_teams(ctx, param, value):
+	'''
+	Validates given team parameters.
+
+	:param value: Value to be validated.
+	'''
 	try:
 		if len(value) > 2:
 			raise click.BadParameter('You can specify max 2 teams.')
@@ -41,6 +54,13 @@ def validate_teams(ctx, param, value):
 
 
 def endpoint(id_, live):
+	'''
+	Defines endpoint by given parameters.
+
+	:param id_: Match ID.
+	:param live: Boolean whether to use live matches endpoint.
+	:return: Endpoint string.
+	'''
 	if live:
 		return live_endpoint
 	else:

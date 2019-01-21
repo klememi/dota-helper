@@ -1,4 +1,8 @@
 class PlayerFriend:
+	'''
+	Entity holding important data for player's best friends data.
+	'''
+
 	def __init__(self, data):
 		self.name = data['personaname']
 		self.account_id = data['account_id']

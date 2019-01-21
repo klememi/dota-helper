@@ -1,24 +1,62 @@
-# DoTA 2 Helper
+Dota 2 Companion
+================
 
-Dota 2 Helper is Dota players' companion app built on [OpenDota API](https://opendota.com). Written in Python running in CLI. Created as a semestral project at FIT CTU in Prague.
+Dota 2 Companion is Dota players' companion app built on [OpenDota API](https://opendota.com). Written in Python running in CLI. Created as a semestral project at FIT CTU in Prague.
 
-## Basic features
-- [ ] List pro players details
-- [ ] List pro matches details
-- [ ] List public matches details
-- [ ] Show distributions of MMR data by bracker and country
-- [ ] Show top players by hero
-- [ ] Show heroes details
-- [ ] Show heroes in meta
-- [ ] Find counter heroes
-- [ ] List top currently ongoing live games
-- [ ] Watch your favourite players' stats
+
+Installation
+------------
+
+1. via test pypi_
+    ``python -m pip install --extra-index-url https://test.pypi.org/pypi dotacli``
+
+2. manually
+    - download the package from GitHub repository_
+    - unpack it
+    - run ``python setup.py install``
+
+.. _pypi: https://test.pypi.org
+.. _repository: https://github.com/klememi/dota-helper
+
+
+Basic features
+--------------
+
+- List pro players details
+- List pro matches details
+- List public matches details
+- Show distributions of MMR data by bracker and country
+- Show top players by hero
+- Show heroes details
+- Show heroes in meta
+- Find counter heroes
+- List top currently ongoing live games
+- Watch your favourite players' stats
+
+
+Personal features
+-----------------
 
 You can add your Steam account ID to the configuration to access features based on you personal games.
 
-## Personal features
-- [ ] Show your personal stats
-- [ ] Show your best heroes
-- [ ] Find counter heroes based on your stats
+- Show your personal stats
+- Show your best heroes
+- Find counter heroes based on your stats
 
-## More features to come!
+
+Documentation
+-------------
+
+Please see full documentation on http://labelord-klememi1.rtfd.io/ for more information.
+
+Optionally you can build *docs* yourself.
+
+1. install application (see `Installation`_)
+2. run ``python -m pip install -r docs/requirements.txt``
+3. ``make html`` in **docs** folder to generate html
+4. ``make doctest`` in **docs** folder to test documentation
+
+License
+-------
+
+**MIT**

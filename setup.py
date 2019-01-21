@@ -16,7 +16,11 @@ setup(
     url='https://github.com/klememi/dota-helper',
     packages=['companion'],
     python_requires='~=3.6',
-    install_requires=['click>=7.0', 'requests>=2.21.0'],
+    install_requires=[
+        'click>=7.0', 
+        'requests>=2.21.0',
+        'ascii-graph>=1.5.1',
+        'configparser>=3.5.0'],
     entry_points={
         'console_scripts': [
             'dotacli = companion.cli:main',

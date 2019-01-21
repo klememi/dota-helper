@@ -2,6 +2,10 @@ from .constants import *
 
 
 class PlayerMatch:
+	'''
+	Entity holding important data for player's match.
+	'''
+
 	def __init__(self, data):
 		self.match_id = data['match_id']
 		self.game_mode = data['game_mode']
@@ -18,18 +22,30 @@ class PlayerMatch:
 
 
 	def skill(self):
+		'''
+		Skill string.
+		'''
 		return ('Normal' if self.skill_int == 1 else 'High' if self.skill_int == 2 else 'Very High') + ' Skill'
 
 
 	def mode(self):
+		'''
+		Game mode string.
+		'''
 		return kMODES[self.game_mode]
 
 
 	def hero(self):
+		'''
+		Hero name string.
+		'''
 		return kHEROES[self.hero_id]
 
 
 	def status(self):
+		'''
+		Game outcome string.
+		'''
 		return 'ABANDON' if self.leaver_status > 1 else 'WON' if self.player_slot < 128 and self.radiant_win else 'LOST'
 
 

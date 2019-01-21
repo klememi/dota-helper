@@ -7,6 +7,12 @@ url = 'https://api.opendota.com/api'
 
 
 def get_response_json(endpoint):
+	'''
+	Sends request to the API.
+
+	:param endpoint: Endpoint to be used for the request.
+	:return: JSON object with response.
+	'''
 	response = requests.get(url + endpoint)
 	if response.status_code != requests.codes.ok:
 		response.raise_for_status()
@@ -14,15 +20,38 @@ def get_response_json(endpoint):
 
 
 def filter_eq(keys, value, array):
+	'''
+	Filters array of dicts by equality of given value with one of the define keys.
+
+	:param keys: Keys used for the comparison.
+	:param value: Value used for the comparison.
+	:param array: Array of dicts to be filtered.
+	:return: Filtered array of dicts.
+	'''
 	return filter_by_multiple_keys(lambda a: [a[key] == value for key in keys], array)
 
 
 def filter_substr(keys, value, array):
+	'''
+	Filters array of dicts by finding substring under one of the given keys.
+
+	:param keys: Keys used for the comparison.
+	:param value: Value used for the comparison.
+	:param array: Array of dicts to be filtered.
+	:return: Filtered array of dicts.
+	'''
 	return filter_by_multiple_keys(lambda a: [str(a[key]).lower().find(value.lower()) >= 0 for key in keys], array)
 
 
-def filter_by_multiple_keys(keys, array):
-	return list(filter(lambda a: reduce(lambda b, c: b or c, keys(a)), array))
+def filter_by_multiple_keys(f, array):
+	'''
+	Base function used for the filtering.
+
+	:param f: Function used for the filtering.
+	:param array: Array of dicts to be filtered.
+	:return: Filtered array.
+	'''
+	return list(filter(lambda a: reduce(lambda b, c: b or c, f(a)), array))
 
 
 class MutuallyExclusiveOption(Option):

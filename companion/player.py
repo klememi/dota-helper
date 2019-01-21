@@ -6,6 +6,11 @@ from .player_friend import PlayerFriend
 
 
 class Player:
+	'''
+	Player entity holding important data for the player.
+	'''
+
+
 	def __init__(self, data_general, data_matches, data_heroes, data_totals, data_peers):
 		self.name = data_general['profile']['name'] or data_general['profile']['personaname'] or kUNKNOWN
 		self.country = data_general['profile']['loccountrycode'] or kUNKNOWN
@@ -35,6 +40,11 @@ class Player:
 
 
 	def prefers(self):
+		'''
+		Defines which side player prefers.
+
+		:return: Side name.
+		'''
 		radiant_ratio = self.radiant_wins / self.radiant_games
 		dire_ratio = self.dire_wins / self.dire_games
 		return 'Radiant' if radiant_ratio > dire_ratio else 'Dire'
@@ -56,7 +66,7 @@ class Player:
 				'\n# BEST FRIENDS\n'
 				'{}').format(self.name,
 							 self.country.upper(),
-							 kRANKS[self.rank],
+							 kRANKS[self.rank] if self.rank else kUNKNOWN,
 							 self.mmr,
 							 self.win,
 							 self.lose,

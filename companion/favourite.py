@@ -3,6 +3,13 @@ from . import players as p
 
 
 def favourite_add(add, cfg, file):
+	'''
+	Adds player ID to the favourites in the config file.
+
+	:param add: Player ID to be added.
+	:param cfg: ConfigParser instance with loaded actual config file.
+	:param file: Path to the config file.
+	'''
 	if add in cfg['favourite'] and cfg['favourite'][add] == 'yes':
 		return print('This player is already in your favourites.')
 	else:
@@ -17,6 +24,13 @@ def favourite_add(add, cfg, file):
 
 
 def favourite_remove(remove, cfg, file):
+	'''
+	Removes player ID from the favourites in the config file.
+
+	:param add: Player ID to be removed.
+	:param cfg: ConfigParser instance with loaded actual config file.
+	:param file: Path to the config file.
+	'''
 	if remove not in cfg['favourite'] or cfg['favourite'][remove] == 'yes':
 		return print('This player is not in your favourites.')
 	else:

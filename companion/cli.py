@@ -1,5 +1,6 @@
-from click import command, option, group, version_option, pass_context
+from click import command, option, group, version_option, pass_context, File
 import configparser
+import os
 from .helpers import *
 from .match import MatchType
 from . import favourite as f
@@ -11,8 +12,8 @@ from . import mmr       as r
 
 @group('dotacli')
 @version_option(version=1.0, prog_name='Dota 2 Companion')
-@option('-c', '--config', 
-		default='./dotacli.cfg',
+@option('-c', '--config',
+		default=os.path.join(os.path.expanduser('~'), '.dotacli'),
 		help='Configuration file path.')
 @option('-i', '--id', 'id_',
 		default='',

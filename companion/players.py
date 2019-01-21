@@ -17,10 +17,21 @@ name_filter             = ['personaname', 'name']
 
 
 def player_id_is_ok(id_):
+	'''
+	Checks if given player ID is valid.
+
+	:param id_: Player ID to be checked.
+	:return: Boolean whether the ID is valid.
+	'''
 	return 'profile' in get_response_json(player_endpoint.format(id_))
 
 
 def best_heroes(id_):
+	'''
+	Prints player's best heroes representation to stdout.
+
+	:param id_: Player ID.
+	'''
 	try:
 		player = load_player(id_)
 	except Exception as err:
@@ -29,6 +40,12 @@ def best_heroes(id_):
 
 
 def players_heroes(id_):
+	'''
+	Gets player's heroes data.
+
+	:param id_: Player ID.
+	:return: JSON with player's heroes data.
+	'''
 	try:
 		return get_response_json(heroes_endpoint.format(id_))
 	except Exception as err:
@@ -36,6 +53,11 @@ def players_heroes(id_):
 
 
 def players_favourite(favourites):
+	'''
+	Prints player's favourites players data to stdout.
+
+	:param favourites: Dict of favourites.
+	'''
 	if not favourites: return print('You need to add some players to favourites with `favourite -add` command.')
 	for f in favourites:
 		if favourites[f] == 'yes':
@@ -44,6 +66,11 @@ def players_favourite(favourites):
 
 
 def players_id(id_):
+	'''
+	Prints player's data to stdout.
+
+	:param id_: Player ID.
+	'''
 	try:
 		player = load_player(id_)
 	except Exception as err:
@@ -52,6 +79,12 @@ def players_id(id_):
 
 
 def load_player(id_):
+	'''
+	Loads player's data from remote.
+
+	:param id_: Player ID.
+	:return: Player entity.
+	'''
 	data_player = get_response_json(player_endpoint.format(id_))
 	data_wl = get_response_json(win_loss_endpoint.format(id_))
 	data_counts = get_response_json(counts_endpoint.format(id_))
@@ -63,8 +96,15 @@ def load_player(id_):
 	return Player(data_general, data_matches, data_heroes, data_totals, data_peers)
 
 
-
 def process_players(data, country, team, name):
+	'''
+	Processes player's data by given parameters and prints to stdout.
+
+	:param data: Data to be processed.
+	:param country: Country to be used as a filter.
+	:param team: Team to be used as a filter.
+	:param name: Name to be used as a filter.
+	'''
 	if country: data = filter_substr(country_filter, country, data)
 	if team:    data = filter_substr(team_filter, team, data)
 	if name:    data = filter_substr(name_filter, name, data)
@@ -73,6 +113,11 @@ def process_players(data, country, team, name):
 
 
 def print_players(data):
+	'''
+	Prints player's data to stdout.
+
+	:param data: Data to be printed.
+	'''
 	if not data: return print(kNO_DATA)
 	print('{:30} {:7} {:30} {:10}'.format('Name', 
 									      'Country',

@@ -1,13 +1,21 @@
 from enum import Enum
+from .constants import *
 
 
 class MatchType(Enum):
+	'''
+	Defines Match entity type.
+	'''
 	RECENT = 1
 	LIVE   = 2
 	EXACT  = 3
 
 
 class Match:
+	'''
+	Match entity holding important data for the match.
+	'''
+
 	def __init__(self, data, type):
 		self.type = type
 		self.data = data
@@ -21,6 +29,9 @@ class Match:
 
 
 	def matches_recent(self):
+		'''
+		Recent matches string representation.
+		'''
 		d = self.data
 		return ('-> {}\n'
 				'ID: {}, duration: {:2d}:{:02d}\n'
@@ -35,9 +46,12 @@ class Match:
 								          d['dire_name'] or kUNKNOWN,
 								          d['dire_score'],
 								          ' WON' if not d['radiant_win'] else '')
-   
+
 
 	def matches_live(self):
+		'''
+		Live matches string representation.
+		'''
 		d = self.data
 		return  '-> {}, Time: {:02d}:{:02d} (avg: {:>4d} MMR) Radiant {:2d} - {:2d} Dire'.format(d['match_id'],
 																							    int(d['game_time']/60),
@@ -51,11 +65,14 @@ class Match:
 
 
 	def match_players_str(self, radiant):
+		'''
+		Players of the match string representation.
+		'''
 		d = self.data
 		if radiant: players = list(filter(lambda a: a['isRadiant'], d['players']))
 		else:       players = list(filter(lambda a: not a['isRadiant'], d['players']))
 		return '\n'.join(['{:23}   {:>2d} / {:>2d} / {:>2d}  networth: {:>5d}\n  {:20}   LVL {}   GPM {}   XPM {}'
-			.format(p['name'] or p['personaname'] or kUNKNOWN, 
+			.format(p.get('personaname', kUNKNOWN), 
                    p['kills'],
                    p['deaths'],
                    p['assists'],
@@ -69,13 +86,16 @@ class Match:
 
 
 	def matches_id(self):
+		'''
+		Exact match string representation.
+		'''
 		d = self.data
 		return '\n'.join([
 			self.match_players_str(radiant=True),
-			'\n{:30}   {}{}\n{:30}   {}{}\n'.format(d['radiant_team']['name'] or 'Radiant',
+			'\n{:30}   {}{}\n{:30}   {}{}\n'.format(d['radiant_team_id'] or 'Radiant',
 												    d['radiant_score'],
 												    '   WON' if self.data['radiant_win'] else '',
-												    d['dire_team']['name'] or 'Dire',
+												    d['dire_team_id'] or 'Dire',
 												    d['dire_score'],
 												    '   WON' if not self.data['radiant_win'] else ''),
 			self.match_players_str(radiant=False)])
