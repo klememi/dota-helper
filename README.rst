@@ -1,7 +1,9 @@
 Dota 2 Companion
 ================
 
-Dota 2 Companion is Dota players' companion app built on [OpenDota API](https://opendota.com). Written in Python running in CLI. Created as a semestral project at FIT CTU in Prague.
+Dota 2 Companion is Dota players' companion app built on OpenDota_ API. Written in Python running in CLI. Created as a semestral project at FIT CTU in Prague.
+
+.. _OpenDota: https://opendota.com
 
 
 Installation
@@ -47,7 +49,7 @@ You can add your Steam account ID to the configuration to access features based 
 Documentation
 -------------
 
-Please see full documentation on http://labelord-klememi1.rtfd.io/ for more information.
+Please see full documentation on http://dotacli.rtfd.io/ for more information.
 
 Optionally you can build *docs* yourself.
 
