@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open('README.rst') as f:
@@ -14,7 +14,7 @@ setup(
     author_email='klememi1@fit.cvut.cz',
     license='MIT License',
     url='https://github.com/klememi/dota-helper',
-    packages=['companion'],
+    packages=find_packages(),
     python_requires='~=3.6',
     install_requires=[
         'click>=7.0', 
