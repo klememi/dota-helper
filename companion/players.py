@@ -36,6 +36,7 @@ def players_heroes(id_):
 
 
 def players_favourite(favourites):
+	if not favourites: return print('You need to add some players to favourites with `favourite -add` command.')
 	for f in favourites:
 		if favourites[f] == 'yes':
 			players_id(f)
