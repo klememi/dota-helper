@@ -192,7 +192,7 @@ def mmr(ranks, country):
 def favourite(ctx, add, remove):
 	if add: return f.favourite_add(add, ctx.obj.get('cfg'), ctx.obj.get('cfgfile'))
 	if remove: return f.favourite_remove(remove, ctx.obj.get('cfg'), ctx.obj.get('cfgfile'))
-	return print('Please chose either of -a/-r options.')
+	return print('Please choose either of -a/-r options.')
 
 
 def main():

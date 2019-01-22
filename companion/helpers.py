@@ -4,19 +4,22 @@ from functools import reduce
 
 
 url = 'https://api.opendota.com/api'
+session = requests.Session()
 
 
-def get_response_json(endpoint):
+def get_response_json(endpoint, session=session):
 	'''
 	Sends request to the API.
 
 	:param endpoint: Endpoint to be used for the request.
+	:param session: Session to be used for HTTP comm.
 	:return: JSON object with response.
 	'''
-	response = requests.get(url + endpoint)
-	if response.status_code != requests.codes.ok:
-		response.raise_for_status()
-	return response.json()
+	with session as s:
+		response = s.get(url + endpoint)
+		if response.status_code != requests.codes.ok:
+			response.raise_for_status()
+		return response.json()
 
 
 def filter_eq(keys, value, array):

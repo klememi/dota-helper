@@ -1,6 +1,12 @@
 Dota 2 Companion
 ================
 
+|rtd|
+
+.. |rtd| image:: https://readthedocs.org/projects/dota-cli/badge/?version=latest
+    :target: https://dota-cli.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 Dota 2 Companion is Dota players' companion app built on OpenDota_ API. Written in Python running in CLI. Created as a semestral project at FIT CTU in Prague.
 
 .. _OpenDota: https://opendota.com
@@ -49,7 +55,7 @@ You can add your Steam account ID to the configuration to access features based 
 Documentation
 -------------
 
-Please see full documentation on http://dotacli.rtfd.io/ for more information.
+Please see full documentation on http://dota-cli.rtfd.io/ for more information.
 
 Optionally you can build *docs* yourself.
 

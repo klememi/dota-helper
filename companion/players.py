@@ -33,6 +33,7 @@ def best_heroes(id_):
 	:param id_: Player ID.
 	'''
 	try:
+		if not player_id_is_ok(id_): raise Exception('Player ID is not valid.')
 		player = load_player(id_)
 	except Exception as err:
 		return print(err)
@@ -47,6 +48,7 @@ def players_heroes(id_):
 	:return: JSON with player's heroes data.
 	'''
 	try:
+		if not player_id_is_ok(id_): raise Exception('Player ID is not valid.')
 		return get_response_json(heroes_endpoint.format(id_))
 	except Exception as err:
 		print(err)
@@ -85,6 +87,7 @@ def load_player(id_):
 	:param id_: Player ID.
 	:return: Player entity.
 	'''
+	if not player_id_is_ok(id_): raise Exception('Player ID is not valid.')
 	data_player = get_response_json(player_endpoint.format(id_))
 	data_wl = get_response_json(win_loss_endpoint.format(id_))
 	data_counts = get_response_json(counts_endpoint.format(id_))

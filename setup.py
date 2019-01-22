@@ -8,7 +8,7 @@ with open('README.rst') as f:
 setup(
     name='Dota 2 Companion',
     version='1.0',
-    description='',
+    description='OpenDota stats in CLI.',
     long_description=long_description,
     author='Michal Klement',
     author_email='klememi1@fit.cvut.cz',
@@ -21,6 +21,8 @@ setup(
         'requests>=2.21.0',
         'ascii-graph>=1.5.1',
         'configparser>=3.5.0'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest', 'betamax'],
     entry_points={
         'console_scripts': [
             'dotacli = companion.cli:main',
