@@ -16,7 +16,7 @@ Installation
 ------------
 
 1. via test pypi_
-    ``python -m pip install --extra-index-url https://test.pypi.org/pypi dotacli``
+    ``python -m pip install -i https://test.pypi.org/simple/ Dota-2-Companion``
 
 2. manually
     - download the package from GitHub repository_
