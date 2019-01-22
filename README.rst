@@ -1,7 +1,11 @@
 Dota 2 Companion
 ================
 
-|rtd|
+|travis| |rtd|
+
+.. |travis| image:: https://travis-ci.org/klememi/dota-helper.svg?branch=master
+	:target: https://travis-ci.org/klememi/dota-helper
+	:alt: Build Status
 
 .. |rtd| image:: https://readthedocs.org/projects/dota-cli/badge/?version=latest
     :target: https://dota-cli.readthedocs.io/en/latest/?badge=latest
